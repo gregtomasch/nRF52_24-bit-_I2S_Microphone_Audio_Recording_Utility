@@ -105,7 +105,7 @@ static bool copy_samples(uint32_t const * p_buffer, uint16_t number_of_words)   
 	  }
 	  i2s_write += count;
       size -= count;
-	  offset = count;
+      offset = count;
       if(i2s_write == RINGBUFFER_SIZE)                                                                     // Wrap the write pointer
       {
         i2s_write = 0;
@@ -173,7 +173,7 @@ APP_PWM_INSTANCE(PWM2,1);                                                       
 
 int main(void)
 {
-	uint32_t err_code = NRF_SUCCESS;
+    uint32_t err_code = NRF_SUCCESS;
 	
     const app_uart_comm_params_t comm_params =                                                             // UART port parameter srtucture variable
       {
@@ -198,18 +198,18 @@ int main(void)
     nrf_drv_i2s_config_t config = NRF_DRV_I2S_DEFAULT_CONFIG;
     config.sdin_pin             = I2S_SDIN_PIN;
     config.sdout_pin            = I2S_SDOUT_PIN;
-	config.mode                 = NRF_I2S_MODE_SLAVE;
+    config.mode                 = NRF_I2S_MODE_SLAVE;
     config.mck_setup            = NRF_I2S_MCK_DISABLED;
-	config.sample_width         = NRF_I2S_SWIDTH_24BIT;
-	config.channels             = NRF_I2S_CHANNELS_LEFT;                                                    // Set the I2S microphone to output on the left channel
-	config.format               = NRF_I2S_FORMAT_I2S;
+    config.sample_width         = NRF_I2S_SWIDTH_24BIT;
+    config.channels             = NRF_I2S_CHANNELS_LEFT;                                                    // Set the I2S microphone to output on the left channel
+    config.format               = NRF_I2S_FORMAT_I2S;
     err_code                    = nrf_drv_i2s_init(&config, data_handler);                                  // Initialize the I2S driver
     APP_ERROR_CHECK(err_code);
 	
     // 1-channel PWM; 16MHz clock and period set in ticks.
-	// The user is responsible for selecting the periods to guve the correct ratio for the I2S frame length
-	app_pwm_config_t pwm1_cfg = APP_PWM_DEFAULT_CONFIG_1CH(25L, PWM_I2S_SCK_PIN);                           // SCK; pick a convenient gpio pin
-	app_pwm_config_t pwm2_cfg = APP_PWM_DEFAULT_CONFIG_1CH(1600L, PWM_I2S_WS_PIN);                          // LRCK; pick a convenient gpio pin. LRCK period = 64X SCK period
+    // The user is responsible for selecting the periods to guve the correct ratio for the I2S frame length
+    app_pwm_config_t pwm1_cfg = APP_PWM_DEFAULT_CONFIG_1CH(25L, PWM_I2S_SCK_PIN);                           // SCK; pick a convenient gpio pin
+    app_pwm_config_t pwm2_cfg = APP_PWM_DEFAULT_CONFIG_1CH(1600L, PWM_I2S_WS_PIN);                          // LRCK; pick a convenient gpio pin. LRCK period = 64X SCK period
 
     // Initialize and enable PWM's
     err_code = app_pwm_ticks_init(&PWM1,&pwm1_cfg,pwm_ready_callback);
@@ -217,22 +217,22 @@ int main(void)
     err_code = app_pwm_ticks_init(&PWM2,&pwm2_cfg,pwm_ready_callback);
     APP_ERROR_CHECK(err_code);
     app_pwm_enable(&PWM1);
-	app_pwm_enable(&PWM2);
-	app_pwm_channel_duty_set(&PWM1, 0, 50);                                                                // Set at 50% duty cycle for square wave
-	app_pwm_channel_duty_set(&PWM2, 0, 50);
+    app_pwm_enable(&PWM2);
+    app_pwm_channel_duty_set(&PWM1, 0, 50);                                                                // Set at 50% duty cycle for square wave
+    app_pwm_channel_duty_set(&PWM2, 0, 50);
 
-	// Instantiate I2S
+    // Instantiate I2S
     err_code = nrf_drv_i2s_start(m_buffer_rx, NULL,                                                        // RX only; "NULL" XMIT buffer
        I2S_BUFFER_SIZE, 0);
     APP_ERROR_CHECK(err_code);
-	memset(m_buffer_rx, 0xCC, sizeof(m_buffer_rx));                                                        // Initialize I2S data callback buffer
+    memset(m_buffer_rx, 0xCC, sizeof(m_buffer_rx));                                                        // Initialize I2S data callback buffer
 	
     for (;;)
     {
       uint32_t count = 0;
-	  uint32_t size = 0;
+      uint32_t size = 0;
 
-	  // Push data from the ring buffer to the UART
+      // Push data from the ring buffer to the UART
       while(i2s_read != i2s_write)
       {
         if(i2s_write > i2s_read)
@@ -248,12 +248,12 @@ int main(void)
           count = RINGBUFFER_SIZE - i2s_read;                                                              // There is enough data so that emptying it out requires wrapping around the end of the ring buffer
         }
         if(count > 128) count = 128;                                                                       // The "Chunk" size should be <= 128bytes to not overwhelm the UART Tx buffer
-		for(uint32_t i=0; i<count; i++)
-		{
-		  while(app_uart_put(ringbuffer[i2s_read + i]) != NRF_SUCCESS);                                    // Load byte-by-byte into UART Tx buffer
-		  size = i+1;
-		}
-		i2s_read += size;
+        for(uint32_t i=0; i<count; i++)
+        {
+          while(app_uart_put(ringbuffer[i2s_read + i]) != NRF_SUCCESS);                                    // Load byte-by-byte into UART Tx buffer
+          size = i+1;
+        }
+        i2s_read += size;
         if(i2s_read == RINGBUFFER_SIZE)
         {
           i2s_read = 0;
