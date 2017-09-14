@@ -29,9 +29,8 @@ in the SDK. The recommended gcc compiler and gnu "make" were used to build the f
 Testing and development were done using the Invensense ICS43432 I2S microphone breakout board from Pesky Products
 (www.tindie.com/products/onehorse/ics43432-i2s-digital-microphone) and the Nordic pca10040 DK board. The application outputs the mono audio
 byte stream via UART serial at 921600baud using CTS/RTS hardware flow control. Capture of the audio byte stream was done using an FTDI 
-USB/Serial adapter capable of 921600baud and CTS/RTS flow control and the "Realterm" application.
-(https://learn.sparkfun.com/tutorials/terminal-basics/real-term-windows). The "Audacity" audio application can then be used to render the
-captured byte stream to sound. (www.audacityteam.org).
+USB/Serial adapter capable of 921600baud and CTS/RTS flow control in combination with the "Realterm" serial terminal application.
+(https://learn.sparkfun.com/tutorials/terminal-basics/real-term-windows). The "Audacity" audio application can then be used to render the captured byte stream to sound. (www.audacityteam.org).
 
 ## Step-by-Step Setup
 
