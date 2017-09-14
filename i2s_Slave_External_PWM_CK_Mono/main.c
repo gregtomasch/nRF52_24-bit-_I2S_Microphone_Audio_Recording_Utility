@@ -76,34 +76,34 @@ void pwm_ready_callback(uint32_t pwm_id)                                        
 
 static bool copy_samples(uint32_t const * p_buffer, uint16_t number_of_words)                              // I2S data callback read and ring buffer write function
 {
-	uint32_t count, size, offset = 0;
+    uint32_t count, size, offset = 0;
 	
-	memcpy(lsample_buffer_rx, p_buffer, (4*number_of_words));                                              // Copy I2S data from the callback buffer to a volitile buffer
+    memcpy(lsample_buffer_rx, p_buffer, (4*number_of_words));                                              // Copy I2S data from the callback buffer to a volitile buffer
 	
-	// Parse I2S callback data and load into a byte array
-	for(uint32_t i=0; i<number_of_words; i++)
-	{
-	  u.word = lsample_buffer_rx[i];
-	  for(uint8_t j=0; j<4; j++)
-	  {
-	    lsample_byte_buffer_rx[((4*i) + j)] = u.byte_decomp[3-j];
-	  }
-	}
-	
-	// Load I2S byte array into the ring buffer and index write pointer
-	count = (4*number_of_words);
-	size = count;
-	if((i2s_write + count) > RINGBUFFER_SIZE)                                                              // IF I2S byte count is larger than the space before pointer wrap, break into two pieces
+    // Parse I2S callback data and load into a byte array
+    for(uint32_t i=0; i<number_of_words; i++)
+    {
+      u.word = lsample_buffer_rx[i];
+      for(uint8_t j=0; j<4; j++)
+      {
+        lsample_byte_buffer_rx[((4*i) + j)] = u.byte_decomp[3-j];
+      }
+    }
+
+    // Load I2S byte array into the ring buffer and index write pointer
+    count = (4*number_of_words);
+    size = count;
+    if((i2s_write + count) > RINGBUFFER_SIZE)                                                              // IF I2S byte count is larger than the space before pointer wrap, break into two pieces
     {
       count = RINGBUFFER_SIZE - i2s_write;
     }
     if(count)
-	{
-	  for(uint32_t i=0; i<count; i++)
-	  {
-	    ringbuffer[i2s_write + i] = lsample_byte_buffer_rx[i];
-	  }
-	  i2s_write += count;
+    {
+      for(uint32_t i=0; i<count; i++)
+      {
+        ringbuffer[i2s_write + i] = lsample_byte_buffer_rx[i];
+      }
+      i2s_write += count;
       size -= count;
       offset = count;
       if(i2s_write == RINGBUFFER_SIZE)                                                                     // Wrap the write pointer
@@ -113,18 +113,18 @@ static bool copy_samples(uint32_t const * p_buffer, uint16_t number_of_words)   
     }
     count = size;
     if(count)                                                                                              // If broken into two parts, do the second part
-	{
-	  for(uint32_t i=0; i<count; i++)
-	  {
-	     ringbuffer[i2s_write + i] = lsample_byte_buffer_rx[offset + i];
-	  }
-	  i2s_write += count;
+    {
+      for(uint32_t i=0; i<count; i++)
+      {
+        ringbuffer[i2s_write + i] = lsample_byte_buffer_rx[offset + i];
+      }
+      i2s_write += count;
       if(i2s_write == RINGBUFFER_SIZE)
       {
         i2s_write = 0;
       }
     }
-	  
+
     return true;
 }
 
@@ -194,7 +194,7 @@ int main(void)
                          err_code);
     APP_ERROR_CHECK(err_code);
 		   
-	// Define the I2S configuration; running in slave mode and using PWM outputs to provide synthetic SCK and LRCK
+    // Define the I2S configuration; running in slave mode and using PWM outputs to provide synthetic SCK and LRCK
     nrf_drv_i2s_config_t config = NRF_DRV_I2S_DEFAULT_CONFIG;
     config.sdin_pin             = I2S_SDIN_PIN;
     config.sdout_pin            = I2S_SDOUT_PIN;
