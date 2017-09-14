@@ -17,18 +17,19 @@ The application in this repository takes advantage of the fact that neither the 
 SCK and WS clock pulses come from. The application uses two of the nRF52's PWM output channels to generate the WS and SCK pulse trains.
 The frequency of the the WS PWM is 1/64 of the SCK PWM output. The I2S process is instantiated in slave mode with the I2S master clock
 deactivated. The SCK PWM output pin is connected to the I2S SCk pin and similarly the WS PWM output is connected to the I2S WS/LRCK pin.
-The I2S microphone is connected as usual to the SCK, WS/LRCK, VDD, GND and SDIN pins of the nRF52823.
+The I2S microphone is connected as usual to the SCK, WS/LRCK, VDD, GND and SDIN pins of the nRF52823. The SCK WS/LRCK PWM output pins 
+were selected as PO.13 and PO.17 respectively but can be changed by the user by updating the relevant define statements in "main.c".
 
 The files in this repository work properly with the Nordic nRF5_SDK_13.0.0_04a0bfd SDK and the Nordic pca10040 DK board. There was one
 necessary modification to the "app_pwm" library in the SDK. A new function: “app_pwm_ticks_init(…)” was added to allow setting the PWM 
-carrier period in terms of 16MHz ticks instead of milliseconds. This essential to achieve the higher carrier frequencies necessary for the
-I2S clock pulses. The main "i2s_Slave_External_PWM_CK_Mono" folder is intended to be copied into the
+carrier period in terms of 16MHz ticks instead of milliseconds. This essential to achieve the higher carrier frequencies necessary for the I2S clock pulses. The main "i2s_Slave_External_PWM_CK_Mono" folder is intended to be copied into the
 “…\nRF5_SDK_13.0.0_04a0bfd\examples\peripheral” folder of the SDK. The executable firmware is then built like any other peripheral example
 in the SDK. The recommended gcc compiler and gnu "make" were used to build the firmware.
 
-Testing and development were done using the Invensense ICS43432 I2S microphone breakout board from [Pesky Products](https://www.tindie.com/products/onehorse/ics43432-i2s-digital-microphone) and the Nordic pca10040 DK board. The application outputs the mono audio
+Testing and development were done using the Invensense [ICS43432 I2S microphone breakout board from Pesky Products](https://www.tindie.com/products/onehorse/ics43432-i2s-digital-microphone) and the Nordic pca10040 DK board. The application outputs the mono audio
 byte stream via UART serial at 921600baud using CTS/RTS hardware flow control. Capture of the audio byte stream was done using an FTDI 
-USB/Serial adapter capable of 921600baud and CTS/RTS flow control in combination with the ["Realterm" serial terminal application](https://learn.sparkfun.com/tutorials/terminal-basics/real-term-windows). The "Audacity" audio application can then be used to render the captured byte stream to sound. (https://www.audacityteam.org).
+USB/Serial adapter capable of 921600baud and CTS/RTS flow control in combination with the ["Realterm" serial terminal application](https://learn.sparkfun.com/tutorials/terminal-basics/real-term-windows). The [Audacity audio application](https://www.audacityteam.org)
+can then be used to render the captured byte stream to sound.
 
 ## Step-by-Step Setup
 
