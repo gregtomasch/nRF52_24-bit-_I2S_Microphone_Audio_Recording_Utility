@@ -8,6 +8,7 @@
  * WARRANTY of ANY KIND is provided. This heading must NOT be removed from
  * the file.
  *
+ * Ths code in its current form was written by Greg Tomasch 9/2017
  */
 
 /** @file
