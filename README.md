@@ -1,4 +1,4 @@
-# nRF52 24-bit I2S_Microphone Audio Recording Utility
+# nRF52 24-bit I2S Microphone Audio Recording Utility
 
 Modern MEMS microphones are tiny, extremely sensitive and capable of recording audio with impressive clarity. Probably the most popular
 embodiment of the MEMS microphone uses the I2S data data socket at 24-bit data word size. However, the term "24-bit" is misleading. The
